@@ -15,7 +15,7 @@ TODO: make screenshots
 
 ## Development blog
 
-If you are interested in the development of this project, I am writing up a blog about it here: [TODO: insert blog link here](https://github.com).
+If you are interested in the development of this project, I am writing up a blog about it here: [blog.md](blog.md).
 
 ## Miscellaneous
 
