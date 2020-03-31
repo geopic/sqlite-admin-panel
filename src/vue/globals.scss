@@ -1,0 +1,71 @@
+/**
+ * src/vue/globals.scss
+ * Global styling rules.
+ * © George Pickering 2020, https://github.com/geopic
+ */
+
+@charset 'UTF-8';
+@import url('https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css');
+
+/**
+   * Variables
+   */
+// Media query 'min-width' sizes
+$medquery-min-width-01: 500px;
+$medquery-min-width-02: 750px;
+$medquery-min-width-03: 1020px;
+$medquery-min-width-04: 1400px;
+$medquery-min-width-05: 1860px;
+
+/**
+  * Selectors
+  */
+body {
+  background-color: #eee;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+
+  @media all and (min-width: $medquery-min-width-01) {
+    font-size: 15px;
+  }
+
+  @media all and (min-width: $medquery-min-width-02) {
+    font-size: 18px;
+  }
+
+  @media all and (min-width: $medquery-min-width-03) {
+    font-size: 20px;
+  }
+}
+
+a {
+  border-bottom: 1px dotted transparent;
+  text-decoration: none;
+
+  &:hover,
+  &:active {
+    border-bottom-color: inherit;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 160%;
+}
+
+h2 {
+  font-size: 130%;
+}
+
+label {
+  font-weight: bold;
+}
