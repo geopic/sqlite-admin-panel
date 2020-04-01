@@ -4,7 +4,10 @@
  * © George Pickering 2020, https://github.com/geopic
  */
 
+import fs from 'fs';
+import path from 'path';
 import props from '@/common/props';
+import sqlite3 from 'better-sqlite3';
 
 export default {
   /**
@@ -30,5 +33,26 @@ export default {
    */
   clearDataFromLS() {
     localStorage.removeItem(props.site.lsKey);
+  },
+
+  databases: {
+    dirPath: path.resolve(__dirname, '..', '..', 'databases'),
+
+    /**
+     * Check if directory exists, create it if not.
+     */
+    async init(): Promise<void> {
+      await fs.promises
+        .access(this.dirPath, fs.constants.F_OK)
+        .catch(async () => await fs.promises.mkdir(this.dirPath));
+    },
+
+    /**
+     * Fetch all database names (filenames) from directory.
+     */
+    async fetchAllFileNames(): Promise<string[]> {
+      await this.init();
+      return await fs.promises.readdir(this.dirPath);
+    }
   }
 };
