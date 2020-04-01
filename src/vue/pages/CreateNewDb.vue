@@ -21,9 +21,22 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import props from '../../common/props';
 
 @Component
 export default class CreateNewDb extends Vue {
+  existingDbs: string[] = [];
+
+  created() {
+    // Load all names of databases to ensure there will be no naming conflict
+    // when a new database is created.
+    // TODO: make form check existingDbs array
+    fetch(`${props.site.serverHost}/db`)
+      .then((res) => res.json())
+      .then((filenames) => (this.existingDbs = filenames))
+      .catch((err) => console.error(err));
+  }
+
   /**
    * Ensure the filename (and not the extension) is selected at first when the
    * user focuses on the 'database name' text field.
@@ -34,9 +47,20 @@ export default class CreateNewDb extends Vue {
     targ.setSelectionRange(0, targ.value.indexOf('.'));
   }
 
+  /**
+   * Handle the creation of the database from the form submit event.
+   */
   createDatabase(e: Event) {
-    const targ = e.target as HTMLFormElement;
-    console.log(targ);
+    fetch(
+      `${props.site.serverHost}/db/${
+        ((e.target as HTMLFormElement).querySelector(
+          'input[name="db-name"]'
+        ) as HTMLInputElement).value
+      }`,
+      {
+        method: 'POST'
+      }
+    ).catch((err) => console.error(err));
   }
 }
 </script>

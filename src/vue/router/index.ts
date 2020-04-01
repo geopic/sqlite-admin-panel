@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
+import Home from '../pages/Home.vue';
 
 Vue.use(VueRouter);
 
@@ -14,7 +14,7 @@ const routes = [
     path: '/create-new-db',
     name: 'CreateNewDb',
     component: () =>
-      import(/* webpackChunkName: "CreateNewDb" */ '../views/CreateNewDb.vue')
+      import(/* webpackChunkName: "CreateNewDb" */ '../pages/CreateNewDb.vue')
   }
 ];
 
