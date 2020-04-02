@@ -28,15 +28,23 @@ app.use((req, res, next) => {
 });
 
 app
-  .route('/db/:dbname?')
+  .route('/database/:dbname?')
   .get(async (req, res) => {
-    res
-      .send(await utils.databases.fetchAllFileNames())
-      .status(200)
-      .end();
+    if (req.params.dbname) {
+      // Send single dbname
+      console.log(req.params);
+      res.status(200).end();
+    } else {
+      // Send all db names
+      res
+        .send(await utils.databases.fetchAllFileNames())
+        .status(200)
+        .end();
+    }
   })
   .post(async (req, res) => {
-    console.log(req.params);
+    await utils.databases.createNewDatabase(req.params.dbname);
+    res.status(200).end();
   });
 
 const server = http.createServer(app).listen(props.site.serverPort);

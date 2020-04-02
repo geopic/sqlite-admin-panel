@@ -7,12 +7,12 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: '/',
-    name: 'Home',
+    name: 'home',
     component: Home
   },
   {
     path: '/create-new-db',
-    name: 'CreateNewDb',
+    name: 'createNewDb',
     component: () =>
       import(/* webpackChunkName: "CreateNewDb" */ '../pages/CreateNewDb.vue')
   }

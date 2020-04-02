@@ -3,14 +3,23 @@
     <h2>Create new database</h2>
     <form @submit.prevent="createDatabase">
       <div class="form-section">
-        <label for="db-name">Filename:</label>
+        <label for="db-name">Database name:</label>
         <input
           type="text"
           name="db-name"
           id="db-name"
-          value="data.db"
-          @focus="handleDbNameFocus"
+          value="data"
+          title="Only alphanumeric characters (and no spaces)."
+          pattern="^[a-zA-Z0-9]+$"
+          @input="handleDbNameInput"
         />
+      </div>
+      <div class="form-section db-exists-warning-box" v-if="badDbName">
+        Database '{{ badDbName }}' already exists.
+        <strong
+          >Are you sure you wish to overwrite it and create a new
+          database?</strong
+        >
       </div>
       <div class="form-section">
         <button type="submit">Create</button>
@@ -25,42 +34,51 @@ import props from '../../common/props';
 
 @Component
 export default class CreateNewDb extends Vue {
+  badDbName: string | null = null;
   existingDbs: string[] = [];
 
   created() {
     // Load all names of databases to ensure there will be no naming conflict
     // when a new database is created.
-    // TODO: make form check existingDbs array
-    fetch(`${props.site.serverHost}/db`)
+    fetch(`${props.site.serverHost}/database`)
       .then((res) => res.json())
-      .then((filenames) => (this.existingDbs = filenames))
+      .then((filenames) => {
+        this.existingDbs = filenames.map((file: string) =>
+          file.replace('.db', '')
+        );
+      })
       .catch((err) => console.error(err));
   }
 
   /**
-   * Ensure the filename (and not the extension) is selected at first when the
-   * user focuses on the 'database name' text field.
+   * Handle changes to state from input event in db-name text field.
    */
-  handleDbNameFocus(e: MouseEvent) {
-    const targ = e.target as HTMLInputElement;
-
-    targ.setSelectionRange(0, targ.value.indexOf('.'));
+  handleDbNameInput() {
+    // Invalid db name would have been changed, so update view to remove warning
+    this.badDbName = null;
   }
 
   /**
    * Handle the creation of the database from the form submit event.
    */
   createDatabase(e: Event) {
-    fetch(
-      `${props.site.serverHost}/db/${
-        ((e.target as HTMLFormElement).querySelector(
-          'input[name="db-name"]'
-        ) as HTMLInputElement).value
-      }`,
-      {
-        method: 'POST'
-      }
-    ).catch((err) => console.error(err));
+    const dbName =
+      ((e.target as HTMLFormElement).querySelector(
+        'input[name="db-name"]'
+      ) as HTMLInputElement).value || 'data';
+
+    if (this.existingDbs.includes(dbName) && !this.badDbName) {
+      this.badDbName = dbName;
+      return;
+    }
+
+    fetch(`${props.site.serverHost}/database/${dbName}`, {
+      method: 'POST'
+    })
+      .then(() => {
+        this.$router.push({ name: 'home' });
+      })
+      .catch((err) => console.error(err));
   }
 }
 </script>
@@ -77,6 +95,7 @@ export default class CreateNewDb extends Vue {
       flex-direction: column;
       justify-content: center;
       margin: 10px 0px;
+      text-align: center;
 
       label {
         margin-bottom: 10px;
@@ -86,6 +105,14 @@ export default class CreateNewDb extends Vue {
         padding: 8px 0px;
         text-align: center;
       }
+    }
+
+    .db-exists-warning-box {
+      background-color: lightcoral;
+      border: 1px solid firebrick;
+      margin: 5px auto;
+      max-width: 860px;
+      padding: 8px;
     }
   }
 }

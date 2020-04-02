@@ -48,6 +48,15 @@ export default {
     },
 
     /**
+     * Create new database file in dirPath.
+     * @param fileName File to create in dirPath.
+     */
+    async createNewDatabase(fileName: string): Promise<void> {
+      await this.init();
+      sqlite3(path.resolve(this.dirPath, `${fileName}.db`));
+    },
+
+    /**
      * Fetch all database names (filenames) from directory.
      */
     async fetchAllFileNames(): Promise<string[]> {
