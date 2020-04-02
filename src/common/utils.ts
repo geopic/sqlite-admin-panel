@@ -8,6 +8,7 @@ import fs from 'fs';
 import path from 'path';
 import props from '@/common/props';
 import sqlite3 from 'better-sqlite3';
+import { DatabaseInfo } from '@/common/types';
 
 export default {
   /**
@@ -57,11 +58,24 @@ export default {
     },
 
     /**
-     * Fetch all database names (filenames) from directory.
+     * Fetch all database files from directory.
      */
-    async fetchAllFileNames(): Promise<string[]> {
+    async fetchAllDbFiles(): Promise<DatabaseInfo[]> {
       await this.init();
-      return await fs.promises.readdir(this.dirPath);
+
+      const arr = [];
+      for await (const file of await fs.promises.readdir(this.dirPath)) {
+        const info: DatabaseInfo = {
+          fileName: file,
+          createdOn: (await fs.promises.stat(path.resolve(this.dirPath, file)))
+            .ctime,
+          lastModifiedOn: (
+            await fs.promises.stat(path.resolve(this.dirPath, file))
+          ).mtime
+        };
+        arr.push(info);
+      }
+      return arr;
     }
   }
 };

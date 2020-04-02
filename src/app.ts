@@ -31,13 +31,13 @@ app
   .route('/database/:dbname?')
   .get(async (req, res) => {
     if (req.params.dbname) {
-      // Send single dbname
+      // Send information on single database (TODO)
       console.log(req.params);
       res.status(200).end();
     } else {
-      // Send all db names
+      // Send information on all databases
       res
-        .send(await utils.databases.fetchAllFileNames())
+        .send(await utils.databases.fetchAllDbFiles())
         .status(200)
         .end();
     }

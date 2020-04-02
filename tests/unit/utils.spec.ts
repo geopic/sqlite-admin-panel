@@ -29,16 +29,10 @@ describe('utils', () => {
       'foo.db'
     ]);
 
-    // 'fetchAllFileNames' tests
-    await fs.promises.writeFile(
-      path.resolve(utils.databases.dirPath, 'foo.txt'),
-      'test'
-    );
+    // 'fetchAllDbFiles' tests
+    const dbs = await utils.databases.fetchAllDbFiles();
 
-    expect(await utils.databases.fetchAllFileNames()).toEqual([
-      'foo.db',
-      'foo.txt'
-    ]);
+    expect(dbs[0].fileName).toEqual('foo.db');
 
     // cleanup
     await fs.promises.rmdir(utils.databases.dirPath, { recursive: true });
