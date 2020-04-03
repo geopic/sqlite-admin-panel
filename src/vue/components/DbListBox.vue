@@ -15,7 +15,7 @@
       </div>
     </div>
 
-    <div class="database-list-box-options">
+    <div class="database-list-box-options" @click="handleOptions">
       <button type="button" class="option-view">View</button>
       <button type="button" class="option-delete">Delete</button>
     </div>
@@ -24,6 +24,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import props from '@/common/props';
 import { format } from 'date-fns';
 
 @Component
@@ -44,6 +45,36 @@ export default class DbListBox extends Vue {
    */
   formatDateAlt(date: string): string {
     return format(new Date(date), 'HH:mm:ss EEEE do LLLL y');
+  }
+
+  /**
+   * Handle database option buttons (view, delete).
+   */
+  handleOptions(e: MouseEvent) {
+    const targ = e.target as HTMLElement;
+
+    if (/view/i.test(targ.className)) {
+      // TODO: Work on viewing individual database
+      console.log(this.$el);
+      return;
+    }
+
+    if (/delete/i.test(targ.className)) {
+      if (
+        confirm(
+          `Are you sure you wish to delete this database (${this.fileName})?`
+        )
+      ) {
+        fetch(
+          `${props.site.serverHost}/database/${this.fileName.split('.')[0]}`,
+          {
+            method: 'DELETE'
+          }
+        )
+          .then(() => this.$el.remove())
+          .catch((err) => console.error(err));
+      }
+    }
   }
 }
 </script>

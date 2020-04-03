@@ -45,6 +45,10 @@ app
   .post(async (req, res) => {
     await utils.databases.createNewDatabase(req.params.dbname);
     res.status(200).end();
+  })
+  .delete(async (req, res) => {
+    await utils.databases.deleteDatabase(req.params.dbname);
+    res.status(200).end();
   });
 
 const server = http.createServer(app).listen(props.site.serverPort);

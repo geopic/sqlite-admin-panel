@@ -34,6 +34,11 @@ describe('utils', () => {
 
     expect(dbs[0].fileName).toEqual('foo.db');
 
+    // 'deleteDatabase' tests
+    await utils.databases.deleteDatabase('foo');
+
+    expect(await fs.promises.readdir(utils.databases.dirPath)).toEqual([]);
+
     // cleanup
     await fs.promises.rmdir(utils.databases.dirPath, { recursive: true });
 

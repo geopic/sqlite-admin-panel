@@ -76,6 +76,14 @@ export default {
         arr.push(info);
       }
       return arr;
+    },
+
+    /**
+     * Delete a database file from directory.
+     * @param dbName Name of database to delete.
+     */
+    async deleteDatabase(dbName: string): Promise<void> {
+      await fs.promises.unlink(path.resolve(this.dirPath, `${dbName}.db`));
     }
   }
 };
