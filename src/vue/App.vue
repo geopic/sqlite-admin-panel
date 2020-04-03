@@ -34,8 +34,6 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
-@import './globals.scss';
-
 #app {
   display: grid;
   grid-template-rows: 50px auto 40px;
@@ -69,7 +67,6 @@ export default class App extends Vue {
 
   main {
     align-items: start;
-    padding: 10px;
 
     & > * {
       width: 100%;
