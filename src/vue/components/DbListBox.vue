@@ -55,7 +55,9 @@ export default class DbListBox extends Vue {
 
     if (/view/i.test(targ.className)) {
       // TODO: Work on viewing individual database
-      console.log(this.$el);
+      fetch(`${props.site.serverHost}/database/${this.fileName.split('.')[0]}`)
+        .then((res) => res.json())
+        .then((json) => console.log(json));
       return;
     }
 

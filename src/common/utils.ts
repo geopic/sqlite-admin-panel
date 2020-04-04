@@ -58,6 +58,36 @@ export default {
     },
 
     /**
+     * Fetch single database file from directory.
+     * @param dbName Name of database to fetch info on.
+     */
+    async fetchSingleDb(dbName: string): Promise<DatabaseInfo | null> {
+      await this.init();
+
+      try {
+        await fs.promises.access(
+          path.resolve(this.dirPath, `${dbName}.db`),
+          fs.constants.F_OK
+        );
+      } catch {
+        console.error(`Database '${dbName}' cannot be recognised.`);
+        return null;
+      }
+
+      const info: DatabaseInfo = {
+        fileName: `${dbName}.db`,
+        createdOn: (
+          await fs.promises.stat(path.resolve(this.dirPath, `${dbName}.db`))
+        ).ctime,
+        lastModifiedOn: (
+          await fs.promises.stat(path.resolve(this.dirPath, `${dbName}.db`))
+        ).mtime
+      };
+
+      return info;
+    },
+
+    /**
      * Fetch all database files from directory.
      */
     async fetchAllDbFiles(): Promise<DatabaseInfo[]> {

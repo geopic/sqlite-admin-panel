@@ -31,9 +31,11 @@ app
   .route('/database/:dbname?')
   .get(async (req, res) => {
     if (req.params.dbname) {
-      // Send information on single database (TODO)
-      console.log(req.params);
-      res.status(200).end();
+      // Send information on single database
+      res
+        .send(await utils.databases.fetchSingleDb(req.params.dbname))
+        .status(200)
+        .end();
     } else {
       // Send information on all databases
       res
