@@ -1,4 +1,4 @@
-### 30/03/2020
+### 30/03/2020 (on @vue/cli, SCSS, flexbox)
 
 Hello all, and welcome to the development blog for my `sqlite-admin-panel` project. In this blog, I will be writing on the development process and approach I took in solving different problems and realising the concept of a web-based SQLite manager.
 
@@ -17,7 +17,7 @@ module.exports = {
 };
 ```
 
-By adding the properties shown above, I am able to re-assign the location which the compiler within `vue-cli-service` seeks out in order to compile and bundle the whole Vue project. This makes the project *so* much easier to manage and clearer when I'm writing server-side code as well as 'common' (cross-end) files inside `/src`.
+By adding the properties shown above, I am able to re-assign the location which the compiler within `vue-cli-service` seeks out in order to compile and bundle the whole Vue project. This makes the project _so_ much easier to manage and clearer when I'm writing server-side code as well as 'common' (cross-end) files inside `/src`.
 
 Having laid down the foundations of the project, I began work on the site's basic design. One trick I like to use concerning the design of the page as a whole involves using the `grid` CSS property to lay out the `<header>`, `<main>` and `<footer>` elements in a clean manner. In `App.vue`, I give the eponymous element a height of `100vh` (so it is as tall as the display showing it) and the following other rules:
 
@@ -37,6 +37,10 @@ Having laid down the foundations of the project, I began work on the site's basi
 }
 ```
 
-In SCSS, which provides the ability to nest selectors, `& > *` is an expression which, in English, points to all children of the element. I set the height of the rows which contain the header and footer to `40px`, to give them *some* space (but not too much), with the row containing the `<main>` element given as much space as it wants.
+In SCSS, which provides the ability to nest selectors, `& > *` is an expression which, in English, points to all children of the element. I set the height of the rows which contain the header and footer to `40px`, to give them _some_ space (but not too much), with the row containing the `<main>` element given as much space as it wants.
 
 The rules I've given to the children are well-worn and a lot of designers working with CSS will know them like "the back of their hand". The elements within each child are vertically-aligned with `align-items: center`, which works because the children themselves are granted maximum height space with `height: 100%`, and then `justify-content: center` aligns the elements inside each child to the centre horizontally. I recall, from a dark time in the past (the early-to-mid 2000s, not dark at all outside of this context), a lack of a cohesive, non-hacky approach to vertically-align elements to the centre of their parent. Thankfully, languages have progressed since that time, particularly within the domain of the web.
+
+### 06/04/2020 (on async unit testing)
+
+This will be a short entry, as I'm not a writer but a web developer. Had a bit of difficulty in testing the asynchronous code in `src/common/utils.ts` this past week. The test file was difficult to navigate with it being littered with `await` keywords, plus I could not test each `database` method independently without race hazards leading to errors being thrown. The solution? Begrudgingly segregate each `database` method in their own `.then()` blocks. It looks nicer than the so-called 'callback hell' but it still irks me that the way in which Jest works does not allow for asynchronous `describe()` blocks, which would have solved this issue. Perhaps sometime in the future I will write an asynchronous TypeScript test runner, who knows.
