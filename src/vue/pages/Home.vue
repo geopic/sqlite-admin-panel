@@ -9,6 +9,9 @@
           :createdOn="db.createdOn"
           :lastModifiedOn="db.lastModifiedOn"
         />
+        <div id="db-exists-create-new-db">
+          <router-link to="/create-new-db">Create new database</router-link>
+        </div>
       </template>
       <template v-else>
         <div>
@@ -51,6 +54,12 @@ export default class Home extends Vue {
 
 <style lang="scss" scoped>
 #home {
+  #db-exists-create-new-db {
+    font-size: 120%;
+    margin: 10px 0px;
+    text-align: center;
+  }
+
   #loading-box {
     text-align: center;
   }

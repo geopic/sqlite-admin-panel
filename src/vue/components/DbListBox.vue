@@ -37,14 +37,14 @@ export default class DbListBox extends Vue {
    * Format date string into human-readable format.
    */
   formatDate(date: string): string {
-    return format(new Date(date), 'HH:mm:ss y-LL-dd');
+    return format(new Date(date), 'HH:mm:ss EEE do LLLL y');
   }
 
   /**
-   * Longer date display, made visible on hover with title attribute.
+   * Standard Year-month-day display, made visible on hover via title attribute.
    */
   formatDateAlt(date: string): string {
-    return format(new Date(date), 'HH:mm:ss EEEE do LLLL y');
+    return format(new Date(date), 'HH:mm:ss y-LL-dd');
   }
 
   /**
@@ -54,11 +54,7 @@ export default class DbListBox extends Vue {
     const targ = e.target as HTMLElement;
 
     if (/view/i.test(targ.className)) {
-      // TODO: Work on viewing individual database
-      fetch(`${props.site.serverHost}/database/${this.fileName.split('.')[0]}`)
-        .then((res) => res.json())
-        .then((json) => console.log(json));
-      return;
+      this.$router.push(`/view-db/${this.fileName.split('.')[0]}`);
     }
 
     if (/delete/i.test(targ.className)) {
@@ -85,36 +81,33 @@ export default class DbListBox extends Vue {
 .database-list-box {
   align-items: center;
   background-color: white;
-  display: grid;
-  grid-template-areas:
-    'nameStats .'
-    'nameStats options'
-    'nameStats .';
+  display: flex;
   justify-content: space-between;
   padding: 5px 10px;
 
   .database-list-box-name-stats {
-    grid-area: nameStats;
+    line-height: 1.2rem;
+    text-align: center;
 
     .database-name {
       font-size: 120%;
       font-weight: bold;
-      margin: 5px 0px;
-      text-align: center;
     }
 
     .database-stats {
       font-size: 90%;
+    }
 
-      & > * {
-        margin: 5px 0px;
-      }
+    @media all and (min-width: $medquery-min-width-02) {
+      line-height: 1.6rem;
+    }
+
+    @media all and (min-width: $medquery-min-width-03) {
+      line-height: 1.8rem;
     }
   }
 
   .database-list-box-options {
-    grid-area: options;
-
     & > * {
       border: 1px solid transparent;
       cursor: pointer;

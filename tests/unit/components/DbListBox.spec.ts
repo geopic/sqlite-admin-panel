@@ -12,17 +12,17 @@ const vm = shallowMount(DbListBox, {
 describe('DbListBox component', () => {
   test('dates format correctly', () => {
     expect(vm.find('.database-created-on').attributes().title).toEqual(
-      '01:00:00 Tuesday 24th September 1991'
+      '01:00:00 1991-09-24'
     );
     expect(vm.find('.database-created-on').text()).toMatch(
-      '01:00:00 1991-09-24'
+      '01:00:00 Tue 24th September 1991'
     );
 
     expect(vm.find('.database-modified-on').attributes().title).toEqual(
-      '01:00:00 Tuesday 24th September 1991'
+      '01:00:00 1991-09-24'
     );
     expect(vm.find('.database-modified-on').text()).toMatch(
-      '01:00:00 1991-09-24'
+      '01:00:00 Tue 24th September 1991'
     );
   });
 });

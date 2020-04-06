@@ -35,7 +35,6 @@ describe('utils', () => {
 
         const db = await utils.databases.fetchSingleDb('foo');
         expect(db).toBeDefined();
-        expect(db!.fileName).toBe('foo.db');
       })
       .then(async () => {
         // 'fetchAllDbFiles' method tests

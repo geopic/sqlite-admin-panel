@@ -30,7 +30,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import props from '../../common/props';
+import props from '@/common/props';
+import { DatabaseInfo } from '@/common/types';
 
 @Component
 export default class CreateNewDb extends Vue {
@@ -42,9 +43,9 @@ export default class CreateNewDb extends Vue {
     // when a new database is created.
     fetch(`${props.site.serverHost}/database`)
       .then((res) => res.json())
-      .then((filenames) => {
-        this.existingDbs = filenames.map((file: string) =>
-          file.replace('.db', '')
+      .then((files) => {
+        this.existingDbs = files.map((db: DatabaseInfo) =>
+          db.fileName.replace('.db', '')
         );
       })
       .catch((err) => console.error(err));
@@ -68,6 +69,7 @@ export default class CreateNewDb extends Vue {
       ) as HTMLInputElement).value || 'data';
 
     if (this.existingDbs.includes(dbName) && !this.badDbName) {
+      // First time user attempts to create new database with existing filename
       this.badDbName = dbName;
       return;
     }

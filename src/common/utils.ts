@@ -54,37 +54,37 @@ export default {
      */
     async createNewDatabase(fileName: string): Promise<void> {
       await this.init();
-      sqlite3(path.resolve(this.dirPath, `${fileName}.db`));
+      const newDbPath = path.resolve(this.dirPath, `${fileName}.db`);
+
+      // Delete any existing db with the same name
+      if (
+        (await fs.promises.readdir(this.dirPath)).includes(`${fileName}.db`)
+      ) {
+        await fs.promises.unlink(newDbPath);
+      }
+
+      sqlite3(newDbPath);
     },
 
     /**
      * Fetch single database file from directory.
      * @param dbName Name of database to fetch info on.
      */
-    async fetchSingleDb(dbName: string): Promise<DatabaseInfo | null> {
+    async fetchSingleDb(dbName: string): Promise<object[] | null> {
       await this.init();
 
+      const dbFilePath = path.resolve(this.dirPath, `${dbName}.db`);
+
       try {
-        await fs.promises.access(
-          path.resolve(this.dirPath, `${dbName}.db`),
-          fs.constants.F_OK
-        );
+        await fs.promises.access(dbFilePath, fs.constants.F_OK);
       } catch {
         console.error(`Database '${dbName}' cannot be recognised.`);
         return null;
       }
 
-      const info: DatabaseInfo = {
-        fileName: `${dbName}.db`,
-        createdOn: (
-          await fs.promises.stat(path.resolve(this.dirPath, `${dbName}.db`))
-        ).ctime,
-        lastModifiedOn: (
-          await fs.promises.stat(path.resolve(this.dirPath, `${dbName}.db`))
-        ).mtime
-      };
-
-      return info;
+      return new sqlite3(dbFilePath)
+        .prepare(`SELECT name FROM sqlite_master WHERE type = 'table'`)
+        .all();
     },
 
     /**

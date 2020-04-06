@@ -14,7 +14,13 @@ const routes = [
     path: '/create-new-db',
     name: 'createNewDb',
     component: () =>
-      import(/* webpackChunkName: "CreateNewDb" */ '../pages/CreateNewDb.vue')
+      import(/* webpackChunkName: "createNewDb" */ '../pages/CreateNewDb.vue')
+  },
+  {
+    path: '/view-db/:dbName?',
+    name: 'viewDb',
+    component: () =>
+      import(/* webpackChunkName: "viewDb" */ '../pages/ViewDb.vue')
   }
 ];
 
