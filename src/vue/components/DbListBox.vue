@@ -69,7 +69,10 @@ export default class DbListBox extends Vue {
             method: 'DELETE'
           }
         )
-          .then(() => this.$el.remove())
+          .then(() => {
+            this.$emit('deleted', this.fileName);
+            this.$el.remove();
+          })
           .catch((err) => console.error(err));
       }
     }

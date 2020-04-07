@@ -1,7 +1,7 @@
 <template>
   <div id="home">
     <template v-if="pageIsLoaded">
-      <template v-if="databasesExist">
+      <template v-if="existingDbs.length > 0">
         <div id="db-sort-bar" @click="handleDbSort">
           <div id="db-sort-bar-header">Sort by:</div>
           <div class="db-sort-option db-sort-option-selected">Name</div>
@@ -14,13 +14,14 @@
           :fileName="db.fileName"
           :createdOn="db.createdOn"
           :lastModifiedOn="db.lastModifiedOn"
+          v-on:deleted="handleDeletedDb"
         />
-        <div id="db-exists-create-new-db">
+        <div class="create-new-db-box">
           <router-link to="/create-new-db">Create new database</router-link>
         </div>
       </template>
       <template v-else>
-        <div>
+        <div class="create-new-db-box">
           No database exists. To create one, please navigate to the
           <router-link to="/create-new-db">create new database</router-link>
           page.
@@ -40,7 +41,6 @@ import DbListBox from '../components/DbListBox.vue';
 @Component({ components: { DbListBox } })
 export default class Home extends Vue {
   existingDbs: DatabaseInfo[] = [];
-  databasesExist = false;
   pageIsLoaded = false;
 
   created() {
@@ -52,7 +52,6 @@ export default class Home extends Vue {
           return;
         }
         this.existingDbs = files;
-        this.databasesExist = true;
       })
       .catch((err) => console.error(err));
   }
@@ -90,6 +89,14 @@ export default class Home extends Vue {
 
     targ.classList.add('db-sort-option-selected');
   }
+
+  /**
+   * Update this page's database list property, removing a database from it that
+   * has been deleted in a child component.
+   */
+  handleDeletedDb(value: string) {
+    this.existingDbs = this.existingDbs.filter((db) => db.fileName !== value);
+  }
 }
 </script>
 
@@ -120,7 +127,7 @@ export default class Home extends Vue {
     }
   }
 
-  #db-exists-create-new-db {
+  .create-new-db-box {
     font-size: 120%;
     margin: 10px 0px;
     text-align: center;
