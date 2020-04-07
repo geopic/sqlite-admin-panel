@@ -2,9 +2,15 @@
   <div id="home">
     <template v-if="pageIsLoaded">
       <template v-if="databasesExist">
+        <div id="db-sort-bar" @click="handleDbSort">
+          <div id="db-sort-bar-header">Sort by:</div>
+          <div class="db-sort-option db-sort-option-selected">Name</div>
+          <div class="db-sort-option">Date created</div>
+          <div class="db-sort-option">Last modified</div>
+        </div>
         <DbListBox
           v-for="db of existingDbs"
-          :key="existingDbs.indexOf(db)"
+          :key="db.id"
           :fileName="db.fileName"
           :createdOn="db.createdOn"
           :lastModifiedOn="db.lastModifiedOn"
@@ -28,11 +34,12 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import props from '@/common/props';
+import { DatabaseInfo } from '@/common/types';
 import DbListBox from '../components/DbListBox.vue';
 
 @Component({ components: { DbListBox } })
 export default class Home extends Vue {
-  existingDbs: string[] = [];
+  existingDbs: DatabaseInfo[] = [];
   databasesExist = false;
   pageIsLoaded = false;
 
@@ -49,11 +56,70 @@ export default class Home extends Vue {
       })
       .catch((err) => console.error(err));
   }
+
+  /**
+   * Handle sorting of database list, triggered by click event on sort bar.
+   */
+  handleDbSort(e: MouseEvent) {
+    const targ = e.target as HTMLElement;
+
+    if (
+      !targ.classList.contains('db-sort-option') ||
+      targ.classList.contains('db-sort-option-selected')
+    ) {
+      return;
+    }
+
+    if (/name/i.test(targ.textContent as string)) {
+      this.existingDbs = this.existingDbs.sort((a, b) =>
+        a.fileName.localeCompare(b.fileName)
+      );
+    } else if (/created/i.test(targ.textContent as string)) {
+      this.existingDbs = this.existingDbs.sort(
+        (a, b) => +new Date(a.createdOn) - +new Date(b.createdOn)
+      );
+    } else if (/modified/i.test(targ.textContent as string)) {
+      this.existingDbs = this.existingDbs.sort(
+        (a, b) => +new Date(a.lastModifiedOn) - +new Date(b.lastModifiedOn)
+      );
+    }
+
+    (targ.parentElement as HTMLElement)
+      .querySelectorAll('.db-sort-option-selected')
+      .forEach((el) => el.classList.remove('db-sort-option-selected'));
+
+    targ.classList.add('db-sort-option-selected');
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 #home {
+  #db-sort-bar {
+    align-items: center;
+    display: flex;
+    justify-content: flex-start;
+
+    & > * {
+      padding: 8px 10px;
+      text-align: center;
+    }
+
+    #db-sort-bar-header {
+      font-weight: bold;
+    }
+
+    .db-sort-option {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .db-sort-option-selected {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+    }
+  }
+
   #db-exists-create-new-db {
     font-size: 120%;
     margin: 10px 0px;

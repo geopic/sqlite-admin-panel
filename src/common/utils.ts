@@ -9,6 +9,7 @@ import path from 'path';
 import props from '@/common/props';
 import sqlite3 from 'better-sqlite3';
 import { DatabaseInfo } from '@/common/types';
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
   /**
@@ -96,6 +97,7 @@ export default {
       const arr = [];
       for await (const file of await fs.promises.readdir(this.dirPath)) {
         const info: DatabaseInfo = {
+          id: uuidv4(),
           fileName: file,
           createdOn: (await fs.promises.stat(path.resolve(this.dirPath, file)))
             .ctime,

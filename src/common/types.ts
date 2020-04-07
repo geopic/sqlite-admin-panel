@@ -8,6 +8,7 @@
  * Database information object, with filename, creation date and last-modified date.
  */
 export type DatabaseInfo = {
+  id: string;
   fileName: string;
   createdOn: Date;
   lastModifiedOn: Date;
