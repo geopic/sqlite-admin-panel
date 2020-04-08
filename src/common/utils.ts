@@ -8,7 +8,7 @@ import fs from 'fs';
 import path from 'path';
 import props from '@/common/props';
 import sqlite3 from 'better-sqlite3';
-import { DatabaseInfo } from '@/common/types';
+import { DatabaseInfo, DatabaseInfoTable } from '@/common/types';
 import { v4 as uuidv4 } from 'uuid';
 
 export default {
@@ -71,7 +71,7 @@ export default {
      * Fetch single database file from directory.
      * @param dbName Name of database to fetch info on.
      */
-    async fetchSingleDb(dbName: string): Promise<object[] | null> {
+    async fetchSingleDb(dbName: string): Promise<DatabaseInfoTable[] | null> {
       await this.init();
 
       const dbFilePath = path.resolve(this.dirPath, `${dbName}.db`);
@@ -83,9 +83,34 @@ export default {
         return null;
       }
 
-      return new sqlite3(dbFilePath)
-        .prepare(`SELECT name FROM sqlite_master WHERE type = 'table'`)
+      const dbData: DatabaseInfoTable[] = new sqlite3(dbFilePath)
+        .prepare(`SELECT name, sql FROM sqlite_master WHERE type = 'table'`)
         .all();
+
+      for (const entry of dbData) {
+        const stmt = new sqlite3(dbFilePath)
+          .prepare(`SELECT * FROM ${entry.name}`)
+          .raw(true);
+
+        entry.uuid = uuidv4();
+        entry.data = stmt.all().map((fields) => {
+          const content = [];
+
+          for (const field of fields) {
+            content.push({ uuid: uuidv4(), fieldContent: field });
+          }
+          return {
+            uuid: uuidv4(),
+            field: content
+          };
+        });
+        entry.columns = (stmt.columns() as any[]).map((obj) => {
+          obj.uuid = uuidv4();
+          return obj;
+        });
+      }
+
+      return dbData;
     },
 
     /**
@@ -97,7 +122,7 @@ export default {
       const arr = [];
       for await (const file of await fs.promises.readdir(this.dirPath)) {
         const info: DatabaseInfo = {
-          id: uuidv4(),
+          uuid: uuidv4(),
           fileName: file,
           createdOn: (await fs.promises.stat(path.resolve(this.dirPath, file)))
             .ctime,

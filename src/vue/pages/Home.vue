@@ -10,7 +10,7 @@
         </div>
         <DbListBox
           v-for="db of existingDbs"
-          :key="db.id"
+          :key="db.uuid"
           :fileName="db.fileName"
           :createdOn="db.createdOn"
           :lastModifiedOn="db.lastModifiedOn"
