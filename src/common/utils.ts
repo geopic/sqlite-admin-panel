@@ -8,7 +8,11 @@ import fs from 'fs';
 import path from 'path';
 import props from '@/common/props';
 import sqlite3 from 'better-sqlite3';
-import { DatabaseInfo, DatabaseInfoTable } from '@/common/types';
+import {
+  DatabaseInfo,
+  DatabaseInfoTable,
+  DatabaseInfoTableRow
+} from '@/common/types';
 import { v4 as uuidv4 } from 'uuid';
 
 export default {
@@ -97,11 +101,12 @@ export default {
           const content = [];
 
           for (const field of fields) {
-            content.push({ uuid: uuidv4(), fieldContent: field });
+            content.push({ uuid: uuidv4(), content: field });
           }
+
           return {
             uuid: uuidv4(),
-            field: content
+            fields: content
           };
         });
         entry.columns = (stmt.columns() as any[]).map((obj) => {

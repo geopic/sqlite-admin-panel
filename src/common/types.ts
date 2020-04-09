@@ -22,6 +22,17 @@ export type DatabaseInfoTable = {
   uuid: string;
   name: string;
   sql: string;
-  columns: any;
-  data: any;
+  columns: object[];
+  data: DatabaseInfoTableRow[];
+};
+
+/**
+ * Individual table row information object.
+ */
+export type DatabaseInfoTableRow = {
+  uuid: string;
+  fields: {
+    uuid: string;
+    content: string | null;
+  }[];
 };

@@ -11,8 +11,7 @@
         v-for="tableData of dbData"
         :key="tableData.uuid"
       >
-        <div class="db-table-name">Name: {{ tableData.name }}</div>
-        <div class="db-table-sql">SQL: {{ tableData.sql }}</div>
+        <h3 class="db-table-name">{{ tableData.name }}</h3>
         <table class="db-table-data-box">
           <thead>
             <tr>
@@ -31,17 +30,35 @@
               v-for="row of tableData.data"
               :key="row.uuid"
             >
-              <td v-for="field of row.field" :key="field.uuid">
-                {{ field.fieldContent }}
+              <td
+                v-for="field of row.fields"
+                :key="field.uuid"
+                :class="{ 'null-field': !field.content }"
+              >
+                {{ field.content ? field.content : 'NULL' }}
               </td>
             </tr>
           </tbody>
         </table>
+
+        <div class="db-table-sql-box">
+          <button
+            type="button"
+            class="db-table-sql-btn"
+            @click="toggleShowHideSql"
+          >
+            Click to show SQL
+          </button>
+          <textarea
+            class="db-table-sql-textarea hidden"
+            :value="tableData.sql"
+          ></textarea>
+        </div>
       </div>
     </template>
     <template v-else>
       <div id="db-no-tables-display">
-        There are no tables in the database.
+        There are no tables in this database.
       </div>
     </template>
   </div>
@@ -67,13 +84,71 @@ export default class ViewDb extends Vue {
       })
       .catch((err) => console.error(err));
   }
+
+  /**
+   * Show / hide SQL textarea, triggered by click event on button.
+   */
+  toggleShowHideSql(e: MouseEvent) {
+    const targ = e.target as HTMLElement;
+    const txtArea = (targ.parentElement as HTMLElement).querySelector(
+      'textarea'
+    ) as HTMLTextAreaElement;
+
+    if (/show/i.test(targ.textContent as string)) {
+      txtArea.classList.remove('hidden');
+      targ.textContent = 'Click to hide SQL';
+    } else if (/hide/i.test(targ.textContent as string)) {
+      txtArea.classList.add('hidden');
+      targ.textContent = 'Click to show SQL';
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
+.hidden {
+  visibility: hidden;
+}
+
+.null-field {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
 #view-db {
   .db-table-box {
-    padding: 10px;
+    align-items: center;
+    border: 2px solid #c0c0c0;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+
+    .db-table-data-box {
+      border-spacing: 10px 5px;
+      font-size: 110%;
+
+      .db-table-data-row {
+        td {
+          padding: 5px 10px;
+          text-align: center;
+        }
+      }
+    }
+
+    .db-table-sql-box {
+      text-align: center;
+
+      textarea {
+        font-family: 'Courier New', Courier, monospace;
+        height: 60px;
+        width: 90%;
+      }
+    }
+  }
+
+  #db-no-tables-display {
+    font-size: 120%;
+    margin: 10px 0px;
+    text-align: center;
   }
 }
 </style>
