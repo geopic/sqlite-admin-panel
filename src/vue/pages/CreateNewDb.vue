@@ -31,7 +31,6 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import props from '@/common/props';
-import { DatabaseInfo } from '@/common/types';
 
 @Component
 export default class CreateNewDb extends Vue {
@@ -44,9 +43,7 @@ export default class CreateNewDb extends Vue {
     fetch(`${props.site.serverHost}/database`)
       .then((res) => res.json())
       .then((files) => {
-        this.existingDbs = files.map((db: DatabaseInfo) =>
-          db.fileName.replace('.db', '')
-        );
+        this.existingDbs = files;
       })
       .catch((err) => console.error(err));
   }

@@ -3,7 +3,7 @@ import DbListBox from '@/vue/components/DbListBox.vue';
 
 const vm = shallowMount(DbListBox, {
   propsData: {
-    fileName: 'test.db',
+    fileName: 'test',
     createdOn: new Date('1991-09-24').toString(),
     lastModifiedOn: new Date('1991-09-24').toString()
   }

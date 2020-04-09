@@ -26,7 +26,7 @@ describe('utils', () => {
         await utils.databases.createNewDatabase('foo');
 
         expect(await fs.promises.readdir(utils.databases.dirPath)).toEqual([
-          'foo.db'
+          'foo'
         ]);
       })
       .then(async () => {
@@ -40,7 +40,7 @@ describe('utils', () => {
         // 'fetchAllDbFiles' method tests
         const dbs = await utils.databases.fetchAllDbFiles();
 
-        expect(dbs[0].fileName).toEqual('foo.db');
+        expect(dbs[0].fileName).toEqual('foo');
       })
       .then(async () => {
         // 'deleteDatabase' method tests

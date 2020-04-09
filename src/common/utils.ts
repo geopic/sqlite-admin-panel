@@ -59,12 +59,10 @@ export default {
      */
     async createNewDatabase(fileName: string): Promise<void> {
       await this.init();
-      const newDbPath = path.resolve(this.dirPath, `${fileName}.db`);
+      const newDbPath = path.resolve(this.dirPath, fileName);
 
       // Delete any existing db with the same name
-      if (
-        (await fs.promises.readdir(this.dirPath)).includes(`${fileName}.db`)
-      ) {
+      if ((await fs.promises.readdir(this.dirPath)).includes(fileName)) {
         await fs.promises.unlink(newDbPath);
       }
 
@@ -73,17 +71,17 @@ export default {
 
     /**
      * Fetch single database file from directory.
-     * @param dbName Name of database to fetch info on.
+     * @param fileName Name of file (database) to fetch info on.
      */
-    async fetchSingleDb(dbName: string): Promise<DatabaseInfoTable[] | null> {
+    async fetchSingleDb(fileName: string): Promise<DatabaseInfoTable[] | null> {
       await this.init();
 
-      const dbFilePath = path.resolve(this.dirPath, `${dbName}.db`);
+      const dbFilePath = path.resolve(this.dirPath, fileName);
 
       try {
         await fs.promises.access(dbFilePath, fs.constants.F_OK);
       } catch {
-        console.error(`Database '${dbName}' cannot be recognised.`);
+        console.error(`Database '${fileName}' cannot be recognised.`);
         return null;
       }
 
@@ -142,10 +140,10 @@ export default {
 
     /**
      * Delete a database file from directory.
-     * @param dbName Name of database to delete.
+     * @param fileName Name of file (database) to delete.
      */
-    async deleteDatabase(dbName: string): Promise<void> {
-      await fs.promises.unlink(path.resolve(this.dirPath, `${dbName}.db`));
+    async deleteDatabase(fileName: string): Promise<void> {
+      await fs.promises.unlink(path.resolve(this.dirPath, `${fileName}`));
     }
   }
 };
