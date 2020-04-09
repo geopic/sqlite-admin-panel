@@ -115,16 +115,22 @@ export default class ViewDb extends Vue {
 }
 
 #view-db {
+  padding: 5px;
+
   .db-table-box {
     align-items: center;
     border: 2px solid #c0c0c0;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
-    margin: 10px;
+    margin: 10px auto;
+
+    .db-table-name {
+      padding: 5px;
+    }
 
     .db-table-data-box {
       border-spacing: 10px 5px;
-      font-size: 110%;
 
       .db-table-data-row {
         td {
@@ -136,6 +142,10 @@ export default class ViewDb extends Vue {
 
     .db-table-sql-box {
       text-align: center;
+
+      button {
+        cursor: pointer;
+      }
 
       textarea {
         font-family: 'Courier New', Courier, monospace;
