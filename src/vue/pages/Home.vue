@@ -2,11 +2,16 @@
   <div id="home">
     <template v-if="pageIsLoaded">
       <template v-if="existingDbs.length > 0">
-        <div id="db-sort-bar" @click="handleDbSort">
-          <div id="db-sort-bar-header">Sort by:</div>
+        <div id="db-sort-bar" @click="handleDbListState">
+          <div id="db-sort-bar-header">
+            Sort by:
+          </div>
           <div class="db-sort-option db-sort-option-selected">Name</div>
           <div class="db-sort-option">Date created</div>
-          <div class="db-sort-option">Last modified</div>
+          <div class="db-sort-option">Date modified</div>
+          <div id="db-sort-bar-order" @click="handleDbSortOrder">
+            {{ ascDescText }}
+          </div>
         </div>
         <DbListBox
           v-for="db of existingDbs"
@@ -43,6 +48,12 @@ export default class Home extends Vue {
   existingDbs: DatabaseInfo[] = [];
   pageIsLoaded = false;
 
+  // 0 = 'name', 1 = 'date created', 2 = 'date modified'
+  sortState = {
+    state: 0,
+    ascending: false
+  };
+
   created() {
     fetch(`${props.site.serverHost}/database`)
       .then((res) => res.json())
@@ -56,38 +67,71 @@ export default class Home extends Vue {
       .catch((err) => console.error(err));
   }
 
+  get ascDescText() {
+    return this.sortState.ascending ? 'asc' : 'desc';
+  }
+
   /**
-   * Handle sorting of database list, triggered by click event on sort bar.
+   * Handle sorting of database list by changing state, triggered by click event
+   * on sort bar.
    */
-  handleDbSort(e: MouseEvent) {
+  handleDbListState(e: MouseEvent) {
     const targ = e.target as HTMLElement;
 
-    if (
-      !targ.classList.contains('db-sort-option') ||
-      targ.classList.contains('db-sort-option-selected')
-    ) {
+    if (!targ.classList.contains('db-sort-option')) {
       return;
     }
 
     if (/name/i.test(targ.textContent as string)) {
-      this.existingDbs = this.existingDbs.sort((a, b) =>
-        a.fileName.localeCompare(b.fileName)
-      );
+      this.sortState.state = 0;
     } else if (/created/i.test(targ.textContent as string)) {
-      this.existingDbs = this.existingDbs.sort(
-        (a, b) => +new Date(a.createdOn) - +new Date(b.createdOn)
-      );
+      this.sortState.state = 1;
     } else if (/modified/i.test(targ.textContent as string)) {
-      this.existingDbs = this.existingDbs.sort(
-        (a, b) => +new Date(a.lastModifiedOn) - +new Date(b.lastModifiedOn)
-      );
+      this.sortState.state = 2;
     }
+
+    this.sortDbList();
 
     (targ.parentElement as HTMLElement)
       .querySelectorAll('.db-sort-option-selected')
       .forEach((el) => el.classList.remove('db-sort-option-selected'));
 
     targ.classList.add('db-sort-option-selected');
+  }
+
+  sortDbList() {
+    /* eslint-disable indent */
+    switch (this.sortState.state) {
+      case 0:
+        this.existingDbs = this.existingDbs.sort((a, b) => {
+          return this.sortState.ascending
+            ? b.fileName.localeCompare(a.fileName)
+            : a.fileName.localeCompare(b.fileName);
+        });
+        break;
+      case 1:
+        this.existingDbs = this.existingDbs.sort((a, b) => {
+          return this.sortState.ascending
+            ? +new Date(a.createdOn) + +new Date(b.createdOn)
+            : +new Date(a.createdOn) - +new Date(b.createdOn);
+        });
+        break;
+      case 2:
+        this.existingDbs = this.existingDbs.sort((a, b) => {
+          return this.sortState.ascending
+            ? +new Date(a.lastModifiedOn) + +new Date(b.lastModifiedOn)
+            : +new Date(a.lastModifiedOn) - +new Date(b.lastModifiedOn);
+        });
+        break;
+    }
+  }
+
+  /**
+   * Toggle sort order (ascending, descending).
+   */
+  handleDbSortOrder() {
+    this.sortState.ascending = !this.sortState.ascending;
+    this.sortDbList();
   }
 
   /**
@@ -124,6 +168,12 @@ export default class Home extends Vue {
     .db-sort-option-selected {
       background-color: rgba(0, 0, 0, 0.5);
       color: white;
+    }
+
+    #db-sort-bar-order {
+      cursor: pointer;
+      font-weight: bold;
+      width: 40px;
     }
   }
 
