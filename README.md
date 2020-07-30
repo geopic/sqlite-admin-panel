@@ -12,12 +12,14 @@
 
 - NodeJS, v13.12.0 at least
 
+<!--
 ## Quick start
 
 ```sh
 git clone https://github.com/geopic/sqlite-admin-panel.git
 ... # TODO: write what comes afterwards
 ```
+-->
 
 ## Development blog
 
