@@ -6,15 +6,15 @@
 # 
 
 exists() {
-  command -v "$1" >/dev/null 2>&1
+  command -v "$1" >/dev/null 2>&1;
 }
 
 echo 'Starting installation...';
 if exists git; then
-  # git clone https://github.com/geopic/sqlite-admin-panel.git
+  git clone https://github.com/geopic/sqlite-admin-panel.git;
   # TODO: Continue installation process
 else
-  echo 'Git is not installed or cannot be recognised on your system. Aborting installation.'
+  echo 'Git is not installed or cannot be recognised on your system. Aborting installation.';
   exit 1;
 fi
 
