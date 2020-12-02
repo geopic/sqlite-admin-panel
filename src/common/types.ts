@@ -5,7 +5,7 @@
  */
 
 /**
- * Database information object, with filename, creation date and last-modified date.
+ * Database information type, with filename, creation date and last-modified date.
  */
 export type DatabaseInfo = {
   uuid: string;
@@ -15,7 +15,7 @@ export type DatabaseInfo = {
 };
 
 /**
- * Individual table information object, with name of table, raw SQL query to
+ * Individual table information type, with name of table, raw SQL query to
  * create table and an array of objects which represent each row of the table.
  */
 export type DatabaseInfoTable = {
@@ -27,7 +27,7 @@ export type DatabaseInfoTable = {
 };
 
 /**
- * Individual table row information object.
+ * Individual table row information type.
  */
 export type DatabaseInfoTableRow = {
   uuid: string;
@@ -35,4 +35,16 @@ export type DatabaseInfoTableRow = {
     uuid: string;
     content: string | null;
   }[];
+};
+
+/**
+ * Type used for creating new columns or modifiying existing columns, modelled
+ * after a CREATE TABLE or ALTER TABLE statement.
+ */
+export type TableColumnSpecs = {
+  name: string;
+  dataType: 'INTEGER' | 'TEXT' | 'BLOB' | 'REAL' | 'NUMERIC';
+  notNull: boolean;
+  primaryKey: boolean;
+  foreignKey: null; // TODO: address this
 };

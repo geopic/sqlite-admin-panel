@@ -61,16 +61,70 @@
         There are no tables in this database.
       </div>
     </template>
+    <form id="db-add-table-form" @submit.prevent="createNewTable">
+      <h3>Add new table</h3>
+      <div>
+        <label for="db-add-table-name">Table name: </label>
+        <input type="text" id="db-add-table-name" />
+      </div>
+      <div>
+        <button type="button" @click="addNewColumn">Add new column</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>
+              <label for="table-col-name">Column name</label>
+            </th>
+            <th><label for="table-data-type">Data type</label></th>
+            <th>
+              <label for="table-default-value"
+                >Default value <small>(leave blank if N/A)</small></label
+              >
+            </th>
+            <th><label for="table-not-null">Not null</label></th>
+            <th><label for="table-primary-key">Primary key</label></th>
+            <th><label for="table-foreign-key">Foreign key</label></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="column of createNewTableColumns"
+            :key="createNewTableColumns.indexOf(column)"
+          >
+            <td>
+              <input type="text" id="table-col-name" :value="column.name" />
+            </td>
+            <td>
+              <select id="table-data-type"
+                ><option value="integer">INTEGER</option>
+                <option value="text">TEXT</option
+                ><option value="blob">BLOB</option
+                ><option value="real">REAL</option
+                ><option value="numeric">NUMERIC</option></select
+              >
+            </td>
+            <td><input type="text" id="table-default-value" /></td>
+            <td><input type="checkbox" id="table-not-null" /></td>
+            <td><input type="checkbox" id="table-primary-key" /></td>
+            <td>Foreign key cell</td>
+          </tr>
+        </tbody>
+      </table>
+      <div><button type="submit">Submit</button></div>
+    </form>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import props from '@/common/props';
+import { DatabaseInfoTable, TableColumnSpecs } from '@/common/types';
 
 @Component
 export default class ViewDb extends Vue {
-  dbData = [];
+  dbData: DatabaseInfoTable[] = [];
+  createNewTableColumns: TableColumnSpecs[] = [];
 
   created() {
     if (!this.$route.params.dbName) {
@@ -83,6 +137,8 @@ export default class ViewDb extends Vue {
         this.dbData = dbData;
       })
       .catch((err) => console.error(err));
+
+    this.addNewColumn();
   }
 
   /**
@@ -101,6 +157,21 @@ export default class ViewDb extends Vue {
       txtArea.classList.add('hidden');
       targ.textContent = 'Click to show SQL';
     }
+  }
+
+  createNewTable(e: Event) {
+    const targ = e.target as HTMLFormElement;
+    console.log(targ);
+  }
+
+  addNewColumn() {
+    this.createNewTableColumns.push({
+      name: '',
+      dataType: 'INTEGER',
+      notNull: false,
+      primaryKey: false,
+      foreignKey: null
+    });
   }
 }
 </script>
