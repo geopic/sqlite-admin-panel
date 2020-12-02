@@ -42,6 +42,7 @@ export type DatabaseInfoTableRow = {
  * after a CREATE TABLE or ALTER TABLE statement.
  */
 export type TableColumnSpecs = {
+  uuid: string;
   name: string;
   dataType: 'INTEGER' | 'TEXT' | 'BLOB' | 'REAL' | 'NUMERIC';
   notNull: boolean;

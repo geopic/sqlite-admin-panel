@@ -47,7 +47,8 @@ export default class App extends Vue {
   }
 
   header {
-    background-color: #8484ff;
+    background-color: #239cff;
+    box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.5);
 
     #site-title {
       a {
@@ -67,6 +68,7 @@ export default class App extends Vue {
 
   main {
     align-items: start;
+    padding: 10px 0px;
 
     & > * {
       width: 100%;

@@ -61,42 +61,61 @@
         There are no tables in this database.
       </div>
     </template>
-    <form id="db-add-table-form" @submit.prevent="createNewTable">
+    <form id="db-create-table-form" @submit.prevent="createNewTable">
       <h3>Add new table</h3>
-      <div>
-        <label for="db-add-table-name">Table name: </label>
-        <input type="text" id="db-add-table-name" />
+      <div id="db-table-config">
+        <div id="db-table-name-box">
+          <label for="db-table-name">Table name: </label>
+          <input type="text" id="db-table-name" />
+        </div>
+        <div id="db-column-info-box">
+          <span>Columns: {{ createNewTableColumns.length }}</span>
+          <button
+            type="button"
+            @click="
+              () =>
+                createNewTableColumns.push(generateTableColumnDefaultValues())
+            "
+          >
+            +
+          </button>
+          <button
+            type="button"
+            @click="
+              () =>
+                createNewTableColumns.length > 1
+                  ? createNewTableColumns.pop()
+                  : false
+            "
+          >
+            -
+          </button>
+        </div>
       </div>
-      <div>
-        <button type="button" @click="addNewColumn">Add new column</button>
-      </div>
-      <table>
+      <table id="db-column-spec-box-desktop">
         <thead>
           <tr>
             <th>
-              <label for="table-col-name">Column name</label>
+              <label for="column-name">Column name</label>
             </th>
-            <th><label for="table-data-type">Data type</label></th>
+            <th><label for="column-data-type">Data type</label></th>
             <th>
-              <label for="table-default-value"
+              <label for="column-default-value"
                 >Default value <small>(leave blank if N/A)</small></label
               >
             </th>
-            <th><label for="table-not-null">Not null</label></th>
-            <th><label for="table-primary-key">Primary key</label></th>
-            <th><label for="table-foreign-key">Foreign key</label></th>
+            <th><label for="column-not-null">Not null</label></th>
+            <th><label for="column-primary-key">Primary key</label></th>
+            <th><label for="column-foreign-key">Foreign key</label></th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="column of createNewTableColumns"
-            :key="createNewTableColumns.indexOf(column)"
-          >
+          <tr v-for="column of createNewTableColumns" :key="column.uuid">
             <td>
-              <input type="text" id="table-col-name" :value="column.name" />
+              <input type="text" id="column-name" :value="column.name" />
             </td>
             <td>
-              <select id="table-data-type"
+              <select id="column-data-type"
                 ><option value="integer">INTEGER</option>
                 <option value="text">TEXT</option
                 ><option value="blob">BLOB</option
@@ -104,20 +123,24 @@
                 ><option value="numeric">NUMERIC</option></select
               >
             </td>
-            <td><input type="text" id="table-default-value" /></td>
-            <td><input type="checkbox" id="table-not-null" /></td>
-            <td><input type="checkbox" id="table-primary-key" /></td>
+            <td><input type="text" id="column-default-value" /></td>
+            <td><input type="checkbox" id="column-not-null" /></td>
+            <td><input type="checkbox" id="column-primary-key" /></td>
             <td>Foreign key cell</td>
           </tr>
         </tbody>
       </table>
-      <div><button type="submit">Submit</button></div>
+      <div id="db-column-spec-box-mobile">TODO: add mobile box</div>
+      <div id="db-create-table-submit-box">
+        <button type="submit">Submit</button>
+      </div>
     </form>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { v4 as uuid } from 'uuid';
 import props from '@/common/props';
 import { DatabaseInfoTable, TableColumnSpecs } from '@/common/types';
 
@@ -138,7 +161,7 @@ export default class ViewDb extends Vue {
       })
       .catch((err) => console.error(err));
 
-    this.addNewColumn();
+    this.createNewTableColumns.push(this.generateTableColumnDefaultValues());
   }
 
   /**
@@ -164,14 +187,15 @@ export default class ViewDb extends Vue {
     console.log(targ);
   }
 
-  addNewColumn() {
-    this.createNewTableColumns.push({
+  generateTableColumnDefaultValues(): TableColumnSpecs {
+    return {
+      uuid: uuid(),
       name: '',
       dataType: 'INTEGER',
       notNull: false,
       primaryKey: false,
       foreignKey: null
-    });
+    };
   }
 }
 </script>
@@ -230,6 +254,59 @@ export default class ViewDb extends Vue {
     font-size: 120%;
     margin: 10px 0px;
     text-align: center;
+  }
+
+  #db-create-table-form {
+    #db-table-config {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px;
+
+      & > * {
+        margin: 5px 0px;
+      }
+
+      #db-column-info-box {
+        & > * {
+          margin: 0px 10px;
+        }
+
+        span {
+          font-weight: bold;
+        }
+      }
+    }
+
+    #db-column-spec-box-desktop {
+      display: none;
+    }
+
+    #db-create-table-submit-box {
+      text-align: center;
+    }
+  }
+
+  @media all and (min-width: $medquery-min-width-03) {
+    #db-create-table-form {
+      #db-column-spec-box-desktop {
+        display: table;
+        margin: 10px auto;
+        max-width: $medquery-min-width-04;
+        width: 100%;
+
+        tbody {
+          td {
+            text-align: center;
+          }
+        }
+      }
+
+      #db-column-spec-box-mobile {
+        display: none;
+      }
+    }
   }
 }
 </style>
