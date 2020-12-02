@@ -81,7 +81,7 @@ export default {
       try {
         await fs.promises.access(dbFilePath, fs.constants.F_OK);
       } catch {
-        console.error(`Database '${fileName}' cannot be recognised.`);
+        console.error(`Database '${fileName}' requested but cannot be found.`);
         return null;
       }
 

@@ -9,8 +9,8 @@
           name="db-name"
           id="db-name"
           value="data"
-          title="Only alphanumeric characters (and no spaces)."
-          pattern="^[a-zA-Z0-9]+$"
+          title="Only alphanumeric characters (and no spaces)"
+          pattern="\w+|\d+"
           @input="handleDbNameInput"
         />
       </div>

@@ -1,18 +1,18 @@
 module.exports = {
   root: true,
   env: {
-    node: true,
+    node: true
   },
   extends: [
     'plugin:vue/essential',
     'eslint:recommended',
-    '@vue/typescript/recommended',
+    '@vue/typescript/recommended'
   ],
   parserOptions: {
-    ecmaVersion: 2020,
+    ecmaVersion: 2020
   },
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     '@typescript-eslint/explicit-member-accessibility': 0,
     '@typescript-eslint/no-empty-interface': 1,
@@ -44,17 +44,17 @@ module.exports = {
     'object-shorthand': 0,
     quotes: ['warn', 'single', { allowTemplateLiterals: true }],
     'space-before-function-paren': 0,
-    'use-isnan': 1,
+    'use-isnan': 1
   },
   overrides: [
     {
       files: [
         '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)',
+        '**/tests/unit/**/*.spec.{j,t}s?(x)'
       ],
       env: {
-        jest: true,
-      },
-    },
-  ],
+        jest: true
+      }
+    }
+  ]
 };
