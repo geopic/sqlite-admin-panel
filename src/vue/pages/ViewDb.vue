@@ -63,12 +63,12 @@
     </template>
     <form id="db-create-table-form" @submit.prevent="createNewTable">
       <h3>Add new table</h3>
-      <div id="db-table-config">
-        <div id="db-table-name-box">
-          <label for="db-table-name">Table name: </label>
-          <input type="text" id="db-table-name" />
+      <div id="table-initial-config">
+        <div id="table-name-box">
+          <label for="table-name">Table name: </label>
+          <input type="text" id="table-name" />
         </div>
-        <div id="db-column-info-box">
+        <div id="table-column-count-box">
           <span>Columns: {{ createNewTableColumns.length }}</span>
           <button
             type="button"
@@ -92,30 +92,34 @@
           </button>
         </div>
       </div>
-      <table id="db-column-spec-box-desktop">
+      <table id="table-column-spec-box-desktop">
         <thead>
           <tr>
             <th>
-              <label for="column-name">Column name</label>
+              <label for="column-name-desktop">Column name</label>
             </th>
-            <th><label for="column-data-type">Data type</label></th>
+            <th><label for="column-data-type-desktop">Data type</label></th>
             <th>
-              <label for="column-default-value"
+              <label for="column-default-value-desktop"
                 >Default value <small>(leave blank if N/A)</small></label
               >
             </th>
-            <th><label for="column-not-null">Not null</label></th>
-            <th><label for="column-primary-key">Primary key</label></th>
-            <th><label for="column-foreign-key">Foreign key</label></th>
+            <th><label for="column-not-null-desktop">Not null</label></th>
+            <th><label for="column-primary-key-desktop">Primary key</label></th>
+            <th><label for="column-foreign-key-desktop">Foreign key</label></th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="column of createNewTableColumns" :key="column.uuid">
             <td>
-              <input type="text" id="column-name" :value="column.name" />
+              <input
+                type="text"
+                id="column-name-desktop"
+                :value="column.name"
+              />
             </td>
             <td>
-              <select id="column-data-type"
+              <select id="column-data-type-desktop"
                 ><option value="integer">INTEGER</option>
                 <option value="text">TEXT</option
                 ><option value="blob">BLOB</option
@@ -123,15 +127,52 @@
                 ><option value="numeric">NUMERIC</option></select
               >
             </td>
-            <td><input type="text" id="column-default-value" /></td>
-            <td><input type="checkbox" id="column-not-null" /></td>
-            <td><input type="checkbox" id="column-primary-key" /></td>
+            <td><input type="text" id="column-default-value-desktop" /></td>
+            <td><input type="checkbox" id="column-not-null-desktop" /></td>
+            <td><input type="checkbox" id="column-primary-key-desktop" /></td>
             <td>Foreign key cell</td>
           </tr>
         </tbody>
       </table>
-      <div id="db-column-spec-box-mobile">TODO: add mobile box</div>
-      <div id="db-create-table-submit-box">
+      <div id="table-column-spec-box-mobile">
+        <div
+          class="column-spec-mobile"
+          v-for="column of createNewTableColumns"
+          :key="column.uuid"
+        >
+          <div class="column-form-section-mobile">
+            <label for="column-name-mobile">Column name</label>
+            <input type="text" id="column-name-mobile" />
+          </div>
+          <div class="column-form-section-mobile">
+            <label for="column-data-type-mobile">Data type</label>
+            <select id="column-data-type-mobile"
+              ><option value="integer">INTEGER</option>
+              <option value="text">TEXT</option
+              ><option value="blob">BLOB</option
+              ><option value="real">REAL</option
+              ><option value="numeric">NUMERIC</option></select
+            >
+          </div>
+          <div class="column-form-section-mobile">
+            <label for="column-default-value-mobile">Default value</label>
+            <input type="text" id="column-default-value-mobile" />
+          </div>
+          <div class="column-form-section-mobile">
+            <label for="column-not-null-mobile">Not null</label>
+            <input type="checkbox" id="column-not-null-mobile" />
+          </div>
+          <div class="column-form-section-mobile">
+            <label for="column-primary-key-mobile">Primary key</label
+            ><input type="checkbox" id="column-primary-key-mobile" />
+          </div>
+          <div class="column-form-section-mobile">
+            <label for="column-foreign-key-mobile">Foreign key</label>
+            <div>Foreign key cell</div>
+          </div>
+        </div>
+      </div>
+      <div id="table-submit-box">
         <button type="submit">Submit</button>
       </div>
     </form>
@@ -257,7 +298,7 @@ export default class ViewDb extends Vue {
   }
 
   #db-create-table-form {
-    #db-table-config {
+    #table-initial-config {
       align-items: center;
       display: flex;
       flex-direction: column;
@@ -268,7 +309,7 @@ export default class ViewDb extends Vue {
         margin: 5px 0px;
       }
 
-      #db-column-info-box {
+      #table-column-count-box {
         & > * {
           margin: 0px 10px;
         }
@@ -279,18 +320,18 @@ export default class ViewDb extends Vue {
       }
     }
 
-    #db-column-spec-box-desktop {
+    #table-column-spec-box-desktop {
       display: none;
     }
 
-    #db-create-table-submit-box {
+    #table-submit-box {
       text-align: center;
     }
   }
 
   @media all and (min-width: $medquery-min-width-03) {
     #db-create-table-form {
-      #db-column-spec-box-desktop {
+      #table-column-spec-box-desktop {
         display: table;
         margin: 10px auto;
         max-width: $medquery-min-width-04;
@@ -303,7 +344,7 @@ export default class ViewDb extends Vue {
         }
       }
 
-      #db-column-spec-box-mobile {
+      #table-column-spec-box-mobile {
         display: none;
       }
     }
